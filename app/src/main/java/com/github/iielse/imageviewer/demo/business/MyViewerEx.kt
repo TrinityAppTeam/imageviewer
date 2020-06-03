@@ -48,10 +48,12 @@ class MyViewerEx(activity: FragmentActivity) {
                     it.addView(it.inflate(R.layout.item_photo_custom_layout))
                 }
                 initialClickDismissEvent(type, viewHolder)
+                initialClickRemoveEvent(viewHolder)
             }
 
             override fun bind(type: Int, data: Photo, viewHolder: RecyclerView.ViewHolder) {
                 val myData = data as MyData
+                viewHolder.itemView.tag = myData
                 viewHolder.itemView.findViewById<TextView>(R.id.exText).text = myData.desc
 
                 bindVideo(type, myData, viewHolder)
@@ -115,6 +117,14 @@ class MyViewerEx(activity: FragmentActivity) {
                 imageView.setOnClickCallback {
                     viewerActions.dismiss()
                 }
+            }
+        }
+    }
+
+    private fun initialClickRemoveEvent(viewHolder: RecyclerView.ViewHolder) {
+        viewHolder.itemView.findViewById<View>(R.id.remove).setOnClickListener {
+            (viewHolder.itemView.tag as? MyData?)?.let {
+                viewerActions.remove(listOf(it))
             }
         }
     }

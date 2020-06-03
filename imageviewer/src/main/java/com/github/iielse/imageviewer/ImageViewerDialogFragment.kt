@@ -27,6 +27,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private val initKey by lazy { requireInitKey() }
     private val transformer by lazy { requireTransformer() }
     private val adapter by lazy { ImageViewerAdapter(initKey) }
+    private var key = initKey
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +55,21 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         viewModel.dataList.observe(viewLifecycleOwner, Observer {
             log { "submitList ${it.size}" }
             adapter.submitList(it)
-            viewer.setCurrentItem(it.indexOfFirst { it.id == initKey }, false)
+            viewer.setCurrentItem(it.indexOfFirst { it.id == key }, false)
         })
 
         events.actionEvent.observe(viewLifecycleOwner, Observer(::handle))
     }
 
+
     private fun handle(action: Pair<String, Any?>?) {
         when (action?.first) {
             ViewerActions.SET_CURRENT_ITEM -> viewer.currentItem = max(action.second as Int, 0)
             ViewerActions.DISMISS -> onBackPressed()
+            ViewerActions.REMOVE_ITEMS -> {
+                // 在这里确定下一个被选中的photoId赋值给key
+                viewModel.remove(action.second)
+            }
         }
     }
 
