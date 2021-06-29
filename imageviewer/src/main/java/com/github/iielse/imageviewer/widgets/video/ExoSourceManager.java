@@ -300,6 +300,7 @@ public class ExoSourceManager {
             if (cache != null) {
                 isCached = resolveCacheState(cache, mDataSource);
                 CacheDataSource.Factory factory = new CacheDataSource.Factory();
+                factory.setUpstreamDataSourceFactory(getDataSourceFactory(context, preview, uerAgent));
                 return factory.
                         setCache(cache).setCacheReadDataSourceFactory(getDataSourceFactory(context, preview, uerAgent)).setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
             }
