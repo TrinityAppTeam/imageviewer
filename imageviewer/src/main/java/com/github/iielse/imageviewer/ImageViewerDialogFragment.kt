@@ -60,16 +60,16 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
         requireOverlayCustomizer().provideView(binding.overlayView)?.let(binding.overlayView::addView)
 
-        viewModel.dataList.observe(viewLifecycleOwner) { list ->
+        viewModel.dataList.observe(viewLifecycleOwner, Observer {list ->
             if (Config.DEBUG) Log.i("viewer", "submitList ${list.size}")
             adapter.submitList(list)
             initPosition = list.indexOfFirst { it.id == initKey }
             binding.viewer.setCurrentItem(initPosition, false)
-        }
+        })
 
-        viewModel.viewerUserInputEnabled.observe(viewLifecycleOwner) {
-            binding.viewer.isUserInputEnabled = it ?: true
-        }
+        viewModel.viewerUserInputEnabled.observe(viewLifecycleOwner, Observer { it ->
+            binding.viewer.isUserInputEnabled  = it ?: true
+        })
 
         events.actionEvent.observe(viewLifecycleOwner, Observer(::handle))
     }
